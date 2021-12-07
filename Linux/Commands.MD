@@ -1,10 +1,11 @@
 Check the ports listening on Machine: 
 
+```sh
 sudo netstat -tulpn | grep LISTEN
 sudo ss -tunlp
 sudo lsof -nP -iTCP -sTCP:LISTEN
 sudo lsof -i | grep LISTEN
-
+```
 
 Where,
 
@@ -17,27 +18,28 @@ Where,
 To find if particular package is installed:
 
 On Debian / Ubuntu / Linux Mint:
+```sh
 dpkg -l | grep packagename
 dpkg -s packagename
 dpkg-query -l packagename
 which packagename
+```
 
 On Fedora / RHEL / CentOS / Scientific Linux:
-
+```sh
 rpm -qa | grep packagename
-
-
-
+```
 
 netcat:
 
 1. Netcat can be used for port scanning: to know which ports are open and running services on a target machine. It can scan a single or multiple or a range of open ports.
-
+```sh
 $ nc -v -w 2 z 192.168.56.1 22     #scan a single port
 OR
 $ nc -v -w 2 z 192.168.56.1 22 80  #scan multiple ports
 OR
 $ nc -v -w 2 z 192.168.56.1 20-25  #scan range of ports
+```
 
 2. Netcat allows you to transfer files between two Linux computers or servers and both these systems must have nc installed.
 
@@ -53,28 +55,34 @@ find:
 The Linux Find Command is one of the most important and frequently used command command-line utility in Unix-like operating systems. Find command is used to search and locate the list of files and directories based on conditions you specify for files that match the arguments.
 
 Find can be used in a variety of conditions like you can find files by permissions, users, groups, file type, date, size, and other possible criteria.
-
+```sh
 - find / -iname test.txt
+```
 
 finds the root directory for test.txt file -i is for ignore case i.e it will search for test.txt or Test.txt
-
+```sh
 - find / -type d -name tomcat
+```
 
 finds the root directory for directory type with name tomcat
-
+```sh
 - find . -type f -perm 0777 -print
+```
 
 finds all the files whose permissions are 777
-
+```sh
 - find . -type f -name "test.txt" -exec rm -f {} \;
+```
 
 To find a single file called test.txt and remove it.
-
+```sh
 - find /tmp -type f -empty
+```
 
 To find all empty files under a certain path.
-
+```sh
 - find /home -user test
+```
 
 To find all files that belong to user test under /home directory.
 
