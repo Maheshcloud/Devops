@@ -1,6 +1,6 @@
-What are the different components of ansible? Explain Ansible architecture.
+1) What are the different components of ansible? Explain Ansible architecture.
 
-The Ansible Automation engine consists of the following components:
+2) The Ansible Automation engine consists of the following components:
 
 Inventories: These are a list of nodes containing their respective IP addresses, servers, databases, etc. which needs to be managed.
 
@@ -20,7 +20,7 @@ CMDB: It is a database that acts as a storehouse for various IT installations. I
 
 Cloud: It is a network of remote servers hosted on the Internet to store, manage, and process data, rather than a local server.
 
-- Explain a few of the basic terminologies or concepts in Ansible.
+3) Explain a few of the basic terminologies or concepts in Ansible.
 
 Few of the basic terms that are commonly used while operating on Ansible are:
 
@@ -42,14 +42,14 @@ Facts: Facts are global variables that store details about the system, like netw
 
 Handlers: Are used to trigger the status of a service, such as restarting or stopping a service.
 
-- What is Ansible Galaxy? 
+4) What is Ansible Galaxy? 
 Galaxy is a website that lets Ansible users share their roles and modules. The Ansible Galaxy command line tool comes packed with Ansible, and it can be used to install roles from Galaxy or directly from a Source Control Management system such as Git. It can also be used to build new roles, remove existing ones and perform tasks on the Galaxy website.
 
 You can use the below command to download roles from the Galaxy website:
 
 $ansible-galaxy install username.role_name
 
-Ansible Role:
+5) Ansible Role:
 An Ansible role is a pre-defined way for organizing playbooks and other files in order to facilitate sharing and reusing portions of provisioning.
 
 site.yml
@@ -89,7 +89,7 @@ templates/main.yml - templates that the role deploys.
 meta/main.yml - metadata for the role, including role dependencies.
 
 
-Modules in Ansible:
+6) Modules in Ansible:
 
 - copy: The copy module is often used in writing playbooks when we want to copy a file from a remote server to destination nodes.
 
