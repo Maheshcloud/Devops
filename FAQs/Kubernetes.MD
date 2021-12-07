@@ -1,14 +1,14 @@
 1) Components of Kubernetes Master:
- Container Runtine(Docker)
- etcd
- kube-scheduler
- kube-apiserver
- kube controller manager
+ - Container Runtine(Docker)
+ - etcd
+ - kube-scheduler
+ - kube-apiserver
+ - kube controller manager
 
 2) Components of Kubernetes Node:
- Container Runtine(Docker)
- kubelet
- kube-proxy
+ - Container Runtine(Docker)
+ - kubelet
+ - kube-proxy
 
 3) kube-apiserver:
 It acts as frontend for the kubernetes control plane. It exposes the Kubernetes API
