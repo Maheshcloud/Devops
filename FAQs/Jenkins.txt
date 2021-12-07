@@ -1,11 +1,13 @@
-- Multi branch pipeline
+1) Multi branch pipeline
 
 The Multibranch Pipeline project type enables you to implement different Jenkinsfiles for different branches of the same project. In a Multibranch Pipeline project, Jenkins automatically discovers, manages and executes Pipelines for branches which contain a Jenkinsfile in source control.
 
-- Forgot password, how would you login
+2) Forgot password, how would you login
+```sh
 /var/lib/jenkins/config.xml
+```
 
-- Jenkins can store the following types of credentials:
+3) Jenkins can store the following types of credentials:
 
   Secret text - a token such as an API token (e.g. a GitHub personal access token) i.e copy the secret text and paste it into the Secret field.
 
@@ -19,8 +21,10 @@ The Multibranch Pipeline project type enables you to implement different Jenkins
 
   Docker Host Certificate Authentication credentials.
 
-- Using for loop in Declarative file:
+4) Using for loop in Declarative file:
 #Script Block in Declarative Pipeline
+
+```sh
 pipeline {
     agent any
     stages {
@@ -38,9 +42,11 @@ pipeline {
         }
     }
 }
+```
 
-- Syntax to run parallel stages in declarative pipeline:
+5) Syntax to run parallel stages in declarative pipeline:
 
+```sh
 pipeline {
     agent none
     stages {
@@ -76,7 +82,7 @@ pipeline {
         }
     }
 }
-
+```
 
 Is there a way to ignore failure?
 
