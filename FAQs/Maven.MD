@@ -5,20 +5,20 @@ the clean lifecycle handles project cleaning,
 while the site lifecycle handles the creation of your project's site documentation.
 
 the default lifecycle comprises of the following phases:
-validate - validate the project is correct and all necessary information is available
-compile - compile the source code of the project
-test - test the compiled source code using a suitable unit testing framework. These tests should not require the code be packaged or deployed
-package - take the compiled code and package it in its distributable format, such as a JAR.
-verify - run any checks on results of integration tests to ensure quality criteria are met
-install - install the package into the local repository, for use as a dependency in other projects locally
-deploy - done in the build environment, copies the final package to the remote repository for sharing with other developers and projects.
+- validate - validate the project is correct and all necessary information is available
+- compile - compile the source code of the project
+- test - test the compiled source code using a suitable unit testing framework. These tests should not require the code be packaged or deployed
+- package - take the compiled code and package it in its distributable format, such as a JAR.
+- verify - run any checks on results of integration tests to ensure quality criteria are met
+- install - install the package into the local repository, for use as a dependency in other projects locally
+- deploy - done in the build environment, copies the final package to the remote repository for sharing with other developers and projects.
 
 2) Types of repositories in Maven:
 Maven repository are of three types. The following illustration will give an idea regarding these three types.
 
-local - Maven local repository is a folder location on your machine. It gets created when you run any maven command for the first time.
-central - Maven central repository is repository provided by Maven community. It contains a large number of commonly used libraries.
-remote - Sometimes, Maven does not find a mentioned dependency in central repository as well. It then stops the build process and output error message to console. To prevent such situation, Maven provides concept of Remote Repository, which is developer's own custom repository containing required libraries or other project jars.
+- local - Maven local repository is a folder location on your machine. It gets created when you run any maven command for the first time.
+- central - Maven central repository is repository provided by Maven community. It contains a large number of commonly used libraries.
+- remote - Sometimes, Maven does not find a mentioned dependency in central repository as well. It then stops the build process and output error message to console. To prevent such situation, Maven provides concept of Remote Repository, which is developer's own custom repository containing required libraries or other project jars.
 
 Maven local repository by default get created by Maven in %USER_HOME% directory. To override the default location, mention another path in Maven settings.xml file available at %M2_HOME%\conf directory.
 
