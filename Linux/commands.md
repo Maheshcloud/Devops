@@ -1,8 +1,8 @@
 See all running processes:
-''
+```
 ps -aux
 ps -U user_name
-''sh
+```
 
 To check the ports listening:
 
