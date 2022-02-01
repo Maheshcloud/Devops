@@ -6,9 +6,9 @@ ps -U user_name
 
 To check the ports listening:
 
-netstat -plunt
+```netstat -plunt```
 You can also use lsof command to find open ports or for finding which process is using a port
-lsof -i
+```lsof -i```
 
 Disk Space: 
 df -h
