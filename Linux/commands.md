@@ -1,10 +1,10 @@
-See all running processes:
+# See all running processes:
 ```
 ps -aux
 ps -U user_name
 ```
 
-To check the ports listening:
+# To check the ports listening:
 
 ```
 netstat -plunt
@@ -14,23 +14,23 @@ You can also use lsof command to find open ports or for finding which process is
 lsof -i
 ```
 
-Disk Space: 
+# Disk Space: 
 ```
 df -h
 ```
 
-To check the memory:
+# To check the memory:
 ```
 free -m
 ```
 
-#logs:
+# logs:
 ```
 /var/log
 tail -f /var/log/messages
 ```
 
-#This displays all the kernel messages:
+# This displays all the kernel messages:
 ```
 dmesg 
 dmesg | more 
@@ -56,7 +56,7 @@ dig command stands for Domain Information Groper. It is used for retrieving info
 dig google.com
 ```
 
-#Getting ram information:
+# Getting ram information:
 ```
 cat /proc/meminfo
 ```
@@ -65,7 +65,7 @@ or if you want to get just the amount of ram you can do:
 cat /proc/meminfo | head -n 1
 ```
 
-#Getting cpu info:
+# Getting cpu info:
 ```
 cat /proc/cpuinfo
 ```
@@ -74,13 +74,13 @@ See what hard drives are currently detected
 sudo fdisk -l
 ```
 
-#Installed Programs:
+# Installed Programs:
 Find all installed packages:
 ```
 dpkg --get-selections | less
 ```
 
-#Keep an eye on something for awhile
+# Keep an eye on something for awhile
 ```
 watch ls
 watch df -h
