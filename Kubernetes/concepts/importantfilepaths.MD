@@ -43,6 +43,7 @@ iptables -L -t nat | grep db-service
 ```
 
 For Qualified domain name:
+
 For Service:
 ```
 http://<servicename>.<namespace>.svc.cluster.local
