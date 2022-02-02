@@ -41,3 +41,13 @@ cat /var/log/kube-proxy.log
 
 iptables -L -t nat | grep db-service
 ```
+
+For Qualified domain name:
+For Service:
+```
+http://<servicename>.<namespace>.svc.cluster.local
+```
+For Pod:
+```
+http://<podIP>.<namespace>.pod.cluster.local
+```
