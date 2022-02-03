@@ -85,3 +85,5 @@ dpkg --get-selections | less
 watch ls
 watch df -h
 ```
+
+
