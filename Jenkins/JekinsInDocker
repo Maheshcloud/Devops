@@ -7,7 +7,8 @@ Create a bridge network in Docker
 
 docker network create jenkins
 Run a docker:dind Docker image
-  '''
+
+ '''
 docker run --name jenkins-docker --rm --detach ^
   --privileged --network jenkins --network-alias docker ^
   --env DOCKER_TLS_CERTDIR=/certs ^
@@ -16,6 +17,7 @@ docker run --name jenkins-docker --rm --detach ^
   --publish 2376:2376 ^
   docker:dind
   '''
+  
 Customise official Jenkins Docker image, by executing below two steps:
 
 Create Dockerfile with the following content:
