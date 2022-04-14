@@ -1,4 +1,4 @@
-On Windows
+##On Windows:
 The Jenkins project provides a Linux container image, not a Windows container image. Be sure that your Docker for Windows installation is configured to run Linux Containers rather than Windows Containers. See the Docker documentation for instructions to switch to Linux containers. Once configured to run Linux Containers, the steps are:
 
 1. Open up a command prompt window and similar to the macOS and Linux instructions above do the following:
@@ -54,7 +54,7 @@ docker run --name jenkins-blueocean --rm --detach ^
  ```
 Proceed to the Setup wizard.
 
-##Accessing the Docker container:##
+##Accessing the Docker container:
 If you have some experience with Docker and you wish or need to access your Docker container through a terminal/command prompt using the docker exec command, you can add an option like --name jenkins-tutorial to the docker exec command. That will access the Jenkins Docker container named "jenkins-tutorial".
 
 This means you could access your docker container (through a separate terminal/command prompt window) with a docker exec command like:
@@ -70,7 +70,7 @@ docker logs <docker-container-name>
 
 Your <docker-container-name> can be obtained using the docker ps command.
 
-##Accessing the Jenkins home directory:##
+##Accessing the Jenkins home directory:
 There is a possibility you may need to access the Jenkins home directory, for instance, to check the details of a Jenkins build in the workspace subdirectory.
 
 If you mapped the Jenkins home directory (/var/jenkins_home) to one on your machine’s local file system (i.e. in the docker run …​ command above), then you can access the contents of this directory through your machine’s usual terminal/command prompt.
