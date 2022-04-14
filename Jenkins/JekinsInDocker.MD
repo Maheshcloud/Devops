@@ -21,7 +21,7 @@ docker run --name jenkins-docker --rm --detach ^
 Customise official Jenkins Docker image, by executing below two steps:
 
 Create Dockerfile with the following content:
-
+```sh
 FROM jenkins/jenkins:2.332.2-jdk11
 USER root
 RUN apt-get update && apt-get install -y lsb-release
@@ -35,18 +35,21 @@ RUN apt-get update && apt-get install -y docker-ce-cli
 USER jenkins
 RUN jenkins-plugin-cli --plugins "blueocean:1.25.3 docker-workflow:1.28"
 Build a new docker image from this Dockerfile and assign the image a meaningful name, e.g. "myjenkins-blueocean:2.332.2-1":
-
+```
+```sh
 docker build -t myjenkins-blueocean:2.332.2-1 .
+```
 Keep in mind that the process described above will automatically download the official Jenkins Docker image if this hasn’t been done before.
 
 Run your own myjenkins-blueocean:2.332.2-1 image as a container in Docker using the following docker run command:
-
+```sh
 docker run --name jenkins-blueocean --rm --detach ^
   --network jenkins --env DOCKER_HOST=tcp://docker:2376 ^
   --env DOCKER_CERT_PATH=/certs/client --env DOCKER_TLS_VERIFY=1 ^
   --volume jenkins-data:/var/jenkins_home ^
   --volume jenkins-docker-certs:/certs/client:ro ^
   --publish 8080:8080 --publish 50000:50000 myjenkins-blueocean:2.332.2-1
+ ```
 Proceed to the Setup wizard.
 
 Accessing the Docker container
