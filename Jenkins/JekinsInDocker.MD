@@ -109,3 +109,7 @@ Notes:
 You can always access the Jenkins console log from the Docker logs (above).
 
 The Jenkins console log indicates the location (in the Jenkins home directory) where this password can also be obtained. This password must be entered in the setup wizard on new Jenkins installations before you can access Jenkins’s main UI. This password also serves as the default administrator account’s password (with username "admin") if you happen to skip the subsequent user-creation step in the setup wizard.
+  
+  
+  Source: https://www.jenkins.io/doc/book/installing/docker/#setup-wizard
+  
