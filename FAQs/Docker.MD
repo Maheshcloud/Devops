@@ -4,6 +4,9 @@ The CMD specifies arguments that will be fed to the ENTRYPOINT.
 If you want to make an image dedicated to a specific command you will use ENTRYPOINT ["/path/dedicated_command"]
 Otherwise, if you want to make an image for general purpose, you can leave ENTRYPOINT unspecified and use CMD ["/path/dedicated_command"] as you will be able to override the setting by supplying arguments to docker run.
 
+CMD will be overridden when running the container with alternative arguments.
+
+
 2. Remove unused objects at a time:
 docker system prune -a
 
