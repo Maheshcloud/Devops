@@ -1,0 +1,9 @@
+maven-plugin:3.19
+git:4.11.4
+publish-over-ssh:1.24
+build-pipeline-plugin:1.5.8
+copyartifact:1.44
+kubernetes-cd:2.3.1
+sonar:2.14
+ssh-agent:295.v9ca_a_1c7cc3a_a_
+deploy:1.16
