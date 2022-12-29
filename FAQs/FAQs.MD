@@ -17,8 +17,11 @@ Validity of the token will have some time in hours
 - Container security tool (Aqua/Prismacloud)
 
 SAST is a white-box testing that analyzes source code for identity security issues.
+
 SCA scans your code base to provide visibility into open source software components, including license compliance and security vulnerabilities. 
+
 DAST is a type of black-box security testing in which dynamic tests are performed on the application 
+
 IAST combines elements of both SAST and DAST and tries to overcome its limitations. It scans specific workflows of code. 
 
 3.	What is Kubernetes 
