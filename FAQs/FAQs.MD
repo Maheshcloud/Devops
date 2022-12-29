@@ -5,6 +5,7 @@ Ans: SAML 2.0(Security Assertion Markup language)
 - Identity Provider(Active Directory) – SAML Token will be sent to the source, then user will contact Service Provider with the Token
 
 Validity of the token will have some time in hours
+
 2.	What type of test is carried out (Unit Test), SonarQube, Sonarqube API's 
 - Unit test
 - Sonar Qube – for code quality
