@@ -116,3 +116,13 @@ notify { "Susan has the uid ${uid_susan}": }
 - Variables exist within a scope
 - If a variable is not found in the current scope, the next scope is searched
 - Scopes are namespaces with :: i.e if we want to access the top scope variable then we use :: like $::var
+- To refer to a variable in a different class:
+```sh
+class foo {
+    $var = 2
+}
+class bar {
+    $var = 3
+    $::foo::var # The output will be 2
+}
+```
