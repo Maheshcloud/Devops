@@ -19,9 +19,13 @@ To check the ordering
 ```sh
 puppet config print ordering
 ```
-To apply with ordering as title-has
+To apply with ordering as title-hash
 ```sh
 puppet apply relationships.pp --ordering title-hash
+```
+To apply with ordering as random
+```sh 
+puppet apply relationships.pp --ordering random
 ```
 
 
