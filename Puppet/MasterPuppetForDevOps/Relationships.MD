@@ -59,6 +59,10 @@ service { 'httpd' :
   ensure => running, 
 }
 ```
+## Triggering Events: 
+- Some resources need to take an action based on an event occurring in a different resource
+- For example when a configuration file is changed we want to restart the service 
+- Some resource types are **refreshable**, meaning they taken an action when they receive a refresh event
 
 
 ## Resource Chaining: 
