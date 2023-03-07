@@ -35,7 +35,7 @@ package { 'httpd' :
   ensure => installed,
 }
 
-Package['httpd']
+Package['httpd'] #referencing the package httpd
 ```
 
 - Using the required attribute
