@@ -6,4 +6,12 @@ Resource Chaining:
 ```sh
 Package['httpd'] -> File['/etc/httpd/httpd.conf']
 ```
+```sh
+Example: 
+notify { 'a' : }
+notify { 'b' : }
+notify { 'c' : }
+
+Notify['a'] -> Notify['b'] -> Notify['c']
+```
 
