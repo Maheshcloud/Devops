@@ -36,3 +36,15 @@ file { '/etc/httpd/httpd.conf' :
 Package['httpd'] -> File['/etc/httpd/httpd.conf'] ~> Service['httpd']
 Service['httpd'] <~ File['/etc/httpd/httpd.conf'] <- Package['httpd']
 ```
+
+When referencing a resource, we are managing the resource declaration in Puppet, not in the configured entity on the agent. 
+```sh
+file { '/home/bob/test/txt' :
+  ensure => file,
+  require => User['bob'],
+}
+
+user { 'bob' : 
+  ensure => present, 
+}
+```
