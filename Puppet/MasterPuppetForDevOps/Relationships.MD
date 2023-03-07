@@ -45,7 +45,7 @@ package { 'httpd' :
 }
 service { 'httpd' :
   ensure => running, 
-  require => Package['httpd'],
+  require => Package['httpd'], # This required will make sure than once package resource ran then only service resource runs. Its like depends on
 }
 
 ```
