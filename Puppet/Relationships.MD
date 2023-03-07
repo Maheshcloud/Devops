@@ -1,4 +1,4 @@
-##Resource Ordering: 
+## Resource Ordering: 
 - Resources are read in the order they are written
 - That doesn't always mean that's the order they will be applied in
 - Manifest ordering is now default, but explicit relatioships are clearer especially with resources across multiple classes
