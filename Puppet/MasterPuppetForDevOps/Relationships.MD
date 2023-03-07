@@ -73,7 +73,7 @@ service { 'httpd' :
   ensure => running,
 }
 ```
-- We can use **subscribe** or **notify** to send an event notification
+- We can use **subscribe** or **notify** to send an event notification.
 Example using subscribe:
 ```sh
 file { '/etc/httpd/httpd.conf' : 
