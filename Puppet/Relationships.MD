@@ -4,7 +4,25 @@
 - Manifest ordering is now default, but explicit relatioships are clearer especially with resources across multiple classes
 - The ordering option defaults to **manifest** in later versions of Puppet, but could be **title-hash or random**
 
+relationships.pp
+```sh
+notify { 'a' : }
+notify { 'b' : }
+notify { 'c' : }
+```
+To run the relationships.pp
+```sh
+puppet apply relationships.pp
+```
 
+To check the ordering 
+```sh
+puppet config print ordering
+```
+To apply with ordering as title-has
+```sh
+puppet apply relationships.pp --ordering title-hash
+```
 
 
 ## Resource Chaining: 
