@@ -27,6 +27,29 @@ To apply with ordering as random
 ```sh 
 puppet apply relationships.pp --ordering random
 ```
+- A resource reference is a pointer to a resource declaration
+
+Example: 
+```sh
+package { 'httpd' :
+  ensure => installed,
+}
+
+Package['httpd']
+```
+
+- Using the required attribute
+```sh
+package { 'httpd' :
+  ensure => installed,
+}
+service { 'httpd' :
+  ensure => running, 
+  require => Package['httpd'],
+}
+
+ 
+
 
 
 ## Resource Chaining: 
