@@ -27,10 +27,10 @@ file { '/etc/httpd/httpd.conf' :
 }
 ```
 
--> left before right
-<- right before left
-~> left refreshes right
-<~ right refreshes left
+  -> left before right
+  <- right before left
+  ~> left refreshes right
+  <~ right refreshes left
 
 ```sh
 Package['httpd'] -> File['/etc/httpd/httpd.conf'] ~> Service['httpd']
