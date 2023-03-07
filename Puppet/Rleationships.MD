@@ -27,9 +27,9 @@ file { '/etc/httpd/httpd.conf' :
 }
 ```
 
-  -> left before right
-  <- right before left
-  ~> left refreshes right
+  -> left before right \n
+  <- right before left \n
+  ~> left refreshes right \n
   <~ right refreshes left
 
 ```sh
