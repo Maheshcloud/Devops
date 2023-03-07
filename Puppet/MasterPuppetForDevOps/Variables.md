@@ -134,6 +134,7 @@ class bar {
 - Facts are also top level variables but the $::facts hash is recommended
 
 #facter os.family
+
 $::facts['os']['family']
 
 ## Trusted Facts
