@@ -7,14 +7,23 @@
 Perform below steps in PuppetServer: 
 
 cd /etc/puppetlabs/code/environments/production/modules/
+
 mkdir apache
+
 cd apache
+
 mkdir manifests
+
 mkdir files
+
 cd files
+
 cp /rooot/httpd_minimal.conf . 
+
 cd ..
+
 cd manifests
+
 vi init.pp
 ```sh
 class apache {
