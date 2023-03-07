@@ -121,6 +121,22 @@ exec { 'clean tinpot cache' :
 - **notify** refreshes the referenced resource when there are changes to itself
 - **subscribe** implies **require**, **notify** implies **before**
 
+## Implied Dependencies: 
+- Some resources have implied dependencies
+- You don't always need to specify dependency metaparameters
+- The **user** resource type autorequies any groups specified
+
+Example: 
+```sh
+user { 'bob' :
+  ensure => present,
+  groups => 'sysadmins',
+}
+group { 'sysadmins' :
+  ensure => present,
+}
+```
+
 ## Resource Chaining: 
 
 - Puppet also supports a short hand syntax for expressing relationships by referencing the resources and chaining them together
