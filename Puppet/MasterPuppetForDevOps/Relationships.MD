@@ -48,7 +48,7 @@ service { 'httpd' :
   require => Package['httpd'],
 }
 
- 
+```
 
 
 
