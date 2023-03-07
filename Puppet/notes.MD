@@ -15,3 +15,14 @@ notify { 'c' : }
 Notify['a'] -> Notify['b'] -> Notify['c']
 ```
 
+Resource declarations can also be directly chained
+
+```sh
+package { 'httpd' :
+  ensure => installed,
+} ->
+file { '/etc/httpd/httpd.conf' : 
+  ensure => file,
+  source => 'puppet:///modules/apache/httpd.conf'
+}
+```
