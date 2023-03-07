@@ -60,4 +60,6 @@ node "agent.localdomain" {
 ```
 
 Run below command in agent: 
+```sh
 puppet agent -t
+```
