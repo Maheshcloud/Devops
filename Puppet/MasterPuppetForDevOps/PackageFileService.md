@@ -49,6 +49,7 @@ class apache {
 }
 ```
 cd /etc/puppetlabs/code/environments/production/manifests/
+
 vi site.pp
 
 ```sh
