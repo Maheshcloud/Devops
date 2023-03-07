@@ -1,0 +1,76 @@
+## Controlling Flow
+- Assignment conditionals
+  - Selectors
+- Flow conditionals
+  - Case statements 
+  - If/Else
+
+### Selectors
+- Selectors assign data based on an evaluation
+- They do not control the flow of code
+
+Example: 
+```sh
+$package_name = $::facts['os']['family'] ? {
+    'Debian' => 'apache2',
+    'Redhat' => 'https',
+    'Solaris' => 'CSWApache2',
+    default => 'httpd',
+}
+```
+### Case Statements
+- Case statements execute a block of code depending on the evaluation
+```sh
+case $::facts['os']['family'] {
+  'Redhat' : {
+    include yum
+  }
+  'Debian' : {
+    include apt
+  }
+  default: {
+    fail ('Unknown Operating system')
+  }
+}
+
+```
+
+## If/Else Blocks
+- If/else/elsif blocks are used to control the general flow of code
+- The block is executed if the evaluation is true
+```sh
+if $install_package {
+    package { $packagename: 
+      ensure => installed,
+    }
+}
+```
+
+- If statements support operators to compare two values
+```sh
+if $environment == 'dev' {
+    include devutils
+}
+```
+- If statements support operators to compare two values
+  - == equals to 
+  - != not equal to 
+  - < less than
+  - <= less than or equal to
+  - > greater than
+  - >= greater than or equal to
+  - =~ match regular expression
+
+  ## Unless
+  - An if statement can be inverted using the unless keyword
+
+  Example: 
+  ```sh
+  if $environment != 'dev' {
+    include users::prod
+  }
+
+  unless $environment == 'dev' {
+    include users::prod
+  }
+  ```
