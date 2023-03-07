@@ -126,3 +126,21 @@ class bar {
     $::foo::var # The output will be 2
 }
 ```
+
+## Facts Revisited
+
+- Agent facts are sent to the server and available in a hash called $::facts
+- We can use the facter command to view facts on the CLI
+- Facts are also top level variables but the $::facts hash is recommended
+
+#facter os.family
+$::facts['os']['family']
+
+## Trusted Facts
+- Trusted facts are retrieved from the Agents SSL certificate
+- They are stored in a top level hash called $::trusted
+```sh
+$::facts['certname']
+$::trusted['certname']
+```
+
