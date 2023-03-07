@@ -38,7 +38,7 @@ package { 'httpd' :
 Package['httpd'] #referencing the package httpd
 ```
 
-- Using the required attribute
+- Using the **required** attribute
 ```sh
 package { 'httpd' :
   ensure => installed,
@@ -49,7 +49,16 @@ service { 'httpd' :
 }
 
 ```
-
+- Using the **before** attribute
+```sh
+package { 'httpd' :
+  ensure => installed,
+  before => Service['httpd'], # This runs before the service runs
+}
+service { 'httpd' :
+  ensure => running, 
+}
+```
 
 
 ## Resource Chaining: 
