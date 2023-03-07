@@ -1,4 +1,13 @@
-Resource Chaining: 
+##Resource Ordering: 
+- Resources are read in the order they are written
+- That doesn't always mean that's the order they will be applied in
+- Manifest ordering is now default, but explicit relatioships are clearer especially with resources across multiple classes
+- The ordering option defaults to **manifest** in later versions of Puppet, but could be **title-hash or random**
+
+
+
+
+##Resource Chaining: 
 
 - Puppet also supports a short hand syntax for expressing relationships by referencing the resources and chaining them together
 - When referencing resources, they must be declared
