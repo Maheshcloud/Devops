@@ -63,6 +63,40 @@ service { 'httpd' :
 - Some resources need to take an action based on an event occurring in a different resource
 - For example when a configuration file is changed we want to restart the service 
 - Some resource types are **refreshable**, meaning they taken an action when they receive a refresh event
+- In this example, we need to restart the service whenever the Apache configuration file is updated
+```sh
+file { '/etc/httpd/httpd.conf' : 
+  ensure => file,
+  source => 'puppet:///modules/apache/httpd.conf',
+}
+service { 'httpd' : 
+  ensure => running,
+}
+```
+- We can use **subscribe** or **notify** to send an event notification
+Example using subscribe:
+```sh
+file { '/etc/httpd/httpd.conf' : 
+  ensure => file,
+  source => 'puppet:///modules/apache/httpd.conf',
+}
+service { 'httpd' : 
+  ensure => running,
+  subscribe => File['/etc/httpd/httpd.conf'], # This will trigger a refresh event
+}
+```
+Example using notify:
+```sh
+file { '/etc/httpd/httpd.conf' : 
+  ensure => file,
+  source => 'puppet:///modules/apache/httpd.conf',
+  notify => Service['httpd'],
+}
+service { 'httpd' : 
+  ensure => running,
+}
+```
+
 
 
 ## Resource Chaining: 
