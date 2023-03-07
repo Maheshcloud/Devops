@@ -53,7 +53,7 @@ service { 'httpd' :
 ```sh
 package { 'httpd' :
   ensure => installed,
-  before => Service['httpd'], # This runs before the service runs
+  before => Service['httpd'], # This runs before the service resource runs
 }
 service { 'httpd' :
   ensure => running, 
