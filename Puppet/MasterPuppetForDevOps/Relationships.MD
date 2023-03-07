@@ -74,6 +74,8 @@ service { 'httpd' :
 }
 ```
 - We can use **subscribe** or **notify** to send an event notification.
+- Subscribe behaves as require but the only difference is subscribe refreshes 
+- Notify behaves as before
 
 Example using subscribe:
 ```sh
