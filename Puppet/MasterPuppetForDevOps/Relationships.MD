@@ -137,6 +137,19 @@ group { 'sysadmins' :
 }
 ```
 
+- The **file** resource type autorequires the user specified in the **owner** attribute
+
+```sh
+user { 'bob' : 
+  ensure => present,
+  groups => 'sysadmins',
+}
+file { '/home/bob/.bashrc' : 
+  ensure => file,
+  owner => 'bob'
+}
+```
+
 ## Resource Chaining: 
 
 - Puppet also supports a short hand syntax for expressing relationships by referencing the resources and chaining them together
