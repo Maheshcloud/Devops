@@ -115,7 +115,11 @@ exec { 'clean tinpot cache' :
 }
 ```
 
-
+- **require** sets order from the referenced resource to the container resource
+- **before** sets order from the container resource to the referenced resource
+- **subscribe** refreshes itself when the referenced resource changes
+- **notify** refreshes the referenced resource when there are changes to itself
+- **subscribe** implies **require**, **notify** implies **before**
 
 ## Resource Chaining: 
 
