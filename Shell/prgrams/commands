@@ -1,0 +1,44 @@
+- How to find the empty files in a folder?
+
+find . -empty
+
+- How to find the average load on the linux maching?
+top command
+
+- What are the file present in .ssh folder?
+
+id_rsa, id_ras.pub, known_hosts, authorizes_keyss
+
+- Need to identify IP addresses in log file and count of ip addresses in log file?
+
+grep -E -o "([0-9]{1,3}[.]){3}[0-9]{1,3}" logfile | sort | uniq -c | sort -nr
+
+
+- What is command for checking the running process? how to get PID of the process?
+
+ps -eaf
+
+
+- Command to get whether certain port is listening or not?
+
+netstat -tunlp
+
+- Idenity no of params that has been sent to shell script?
+
+$#
+
+- Command to delete empty line in a file?
+
+sed '/^$/d' file.sh
+
+- How to find exit status?
+
+$? 
+If its 0 then the previous command ran successfully
+
+- How to get the info about the machine we are using?
+
+uname -a
+
+
+
