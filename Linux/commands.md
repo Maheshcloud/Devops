@@ -16,7 +16,9 @@ lsof -i
 
 # Disk Space: 
 ```
-df -h
+df -h  //The df command only targets a full filesystem. Even if you specify an individual directory, df reads the space of the whole drive.
+du -h  //It prints the current directory contents and how much space they're using in kilobytes, megabytes, and gigabytes.
+lsblk //While lsblk does not provide detailed disk usage info, the output shows a hierarchical view of block devices
 ```
 
 # To check the memory:
@@ -85,5 +87,9 @@ dpkg --get-selections | less
 watch ls
 watch df -h
 ```
+
+
+
+
 
 
