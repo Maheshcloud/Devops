@@ -55,3 +55,11 @@ init sets the remainder of the system processes in motion.
 For some purpose, init starts a method permitting you to log in, typically at the top or close to the top of the boot sequence.
 ![alt text](image.png)
 
+- Troubleshooting steps in disk write/read is slow:
+Check CPU load
+Watch iostat/iotop output to determine if something else was writing
+Check dmesg output for any kernel errors
+Type “top” and press enter. This launches the top tool, which shows server statistics and a list of running processes. The wa metric shows IO-wait, the amount of time the CPU spends waiting for IO completion represented as a percentage.
+
+
+
