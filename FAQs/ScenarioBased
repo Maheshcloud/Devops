@@ -1,0 +1,746 @@
+1) 𝐒𝐜𝐞𝐧𝐚𝐫𝐢𝐨
+I have created multiple applications along with services and I set up an ingress for all my applications via a routing-based approach. Also, I am using the AWS Load Balancer Controller as an Ingress Controller.
+
+𝐏𝐫𝐨𝐛𝐥𝐞𝐦
+I want to configure health probes for each application, but the health check path is different for each service.
+
+𝐒𝐨𝐥𝐮𝐭𝐢𝐨𝐧
+If you have basic knowledge of AWS Load Balancer, it creates target groups whenever you add the routes in the ingress of Kubernetes manifests for the dedicated Kubernetes services.
+To provide different health paths to different services, the AWS Load balancer controller provides annotations which you can see in the below code snippet. With the help of annotations, you can provide the dedicated health paths in each service file.
+
+𝐐𝐮𝐞𝐬𝐭𝐢𝐨𝐧
+Which approach do you use to provide customized health paths for your multiple applications?
+
+2) 𝐊𝐮𝐛𝐞𝐫𝐧𝐞𝐭𝐞𝐬 𝐜𝐨𝐫𝐝𝐨𝐧 𝐕𝐒 𝐊𝐮𝐛𝐞𝐫𝐧𝐞𝐭𝐞𝐬 𝐝𝐫𝐚𝐢𝐧
+
+Both commands aim to upgrade your Kubernetes cluster and node groups with almost zero downtime.
+
+But what is the difference between both of them:
+
+𝗖𝗼𝗿𝗱𝗼𝗻:
+The cordon command is used to inform the cluster not to schedule any new pod on the nodes, and other/existing pods should be running without downtime or disruption.
+
+𝗗𝗿𝗮𝗶𝗻:
+The drain command is used to evict all the pods from the particular node group and stop pods from scheduling on the nodes. Drain command is majorly used for the maintenance of the particular node groups.
+
+𝐐𝐮𝐞𝐬𝐭𝐢𝐨𝐧
+What approach do you follow to upgrade your Kubernetes cluster including nodegroups, and their AMI?
+
+3) 𝐒𝐜𝐞𝐧𝐚𝐫𝐢𝐨
+I have deployed my application where multiple microservices are deployed with the help of deployment and service (ClusterIP). Now, I need to expose my application (front end) to the internet. So, you will be able to visit my application. I heard about Ingress controllers such as the AWS Load Balancer controller, the Nginx controller, etc. As I am deploying my application on an EKS cluster, I would choose an AWS load balancer controller.
+
+𝐏𝐫𝐨𝐛𝐥𝐞𝐦
+I implemented the LB controller, but I need to configure SSL on my application. I need to redirect traffic from port 80 (HTTP) to 443 (HTTPS) for secure access. Also, I need to configure internet-facing load balancers instead of internal ones (it will expose the application within the VPC), and the target group type should be IP instead of instance, etc.
+
+𝐒𝐨𝐥𝐮𝐭𝐢𝐨𝐧
+To achieve this, load balancer controllers provide the annotations feature. With the help of annotations, you can configure your ingress controller as per your requirements. 
+As you can see in the below snippet, I have written most of the important annotations to configure my ingress, which will deploy my application to the internet.
+For detailed annotations, you can refer to this link: https://lnkd.in/ggKGayrw 
+
+𝐐𝐮𝐞𝐬𝐭𝐢𝐨𝐧
+If you observe the below snippet, I have exposed my backend service along with the front end, which does not come under DevOps best practices. Now, I want my backend application to be able to connect with the front-end application only. What approach would you choose?
+𝐇𝐢𝐧𝐭: The answer to this question is in this post. IYKYK.
+One more hint: There is no Kubernetes component you need to use. It will be done by one AWS service that we talked about in this tip only but with a different type.
+
+4) 𝐒𝐜𝐞𝐧𝐚𝐫𝐢𝐨/𝐏𝐫𝐨𝐛𝐥𝐞𝐦
+I have created one deployment with the nginx image where the replicas are 2. 
+Now, I made some changes in my Nginx docker image and updated the image tag in the Kubernetes deployment file. However, I want to ensure there is no downtime in my application which means the new deployment should create the replicas first then only, it should delete the previous deployment.
+
+𝐒𝐨𝐥𝐮𝐭𝐢𝐨𝐧
+To do that, Kubernetes provides multiple types of rolling strategies such as Blue/Green, Canary, RollingUpdate, etc. 
+But, the default strategy provided by Kubernetes is Rolling Update. 
+As you can see in the below snippet(YAML), we have provided one keyword called strategy under the spec section. 
+
+Generally, all rolling strategies are meant to achieve zero downtime.
+But you need to choose which strategy is suitable according to your application.
+The RollingUpdate strategy helps to replace old running pods with new pods. As you want to achieve zero downtime, you need to use parameters with RollingUpdate carefully.
+There are major two parameters which are maxSurge and maxUnavailable.
+maxSurge- It specifies how many pods can be run at the same/one time.
+maxUnavailable- It specifies how many pods can be unavailable during the rollout.
+You can provide maxSurge and maxUnavailable values either as an Integer or in Percentage.
+
+𝗜𝗹𝗹𝘂𝘀𝘁𝗿𝗮𝘁𝗶𝗼𝗻
+Now, let’s understand with our example.
+Suppose, my application has 2 replicas and I deployed new changes. As I mentioned above in my deployment the maxSurge value is 4. So, this will create 2 new replicas from the updated deployment. 
+After maxSurge, As I mentioned maxUnavailable value is 1 which means only 1 replica can be unavailable whether the total number of replicas is 2 or 20.
+
+But if I mentioned maxSurge value is 2, then it can’t create new replicas from the updated deployment. Hence, it will delete the existing running 2 replicas where the application will face downtime.
+
+𝗬𝗲𝘀/𝗡𝗼
+Now, there is one more scenario
+I have 1 replica in the deployment file with a maxSurge value is 1 and a maxUnavailable value is 0.
+So, do we face any downtime in our Nginx application?
+
+5) 𝐒𝐜𝐞𝐧𝐚𝐫𝐢𝐨
+I was working on a feature branch, creating a few new Terraform resources. But in the middle of that, I got something else, and I need to go to the master branch. I don’t want to commit my feature branch changes as I didn’t verify them by creating resources in a development environment.
+
+𝐏𝐫𝐨𝐛𝐥𝐞𝐦
+If I go back to the master branch using the git checkout or switch command, it will throw an error stating that I need to save my current changes first or commit them.
+
+𝐒𝐨𝐥𝐮𝐭𝐢𝐨𝐧
+To resolve this, we can use the git stash command to save our changes in the middle of some other work.
+So, I solved my issue through the below commands.
+> git stash
+> git switch master
+// Completed work on the master branch and going back to the feature branch that I stashed earlier
+> git switch feature101
+> git stash pop 
+// Start working on the feature branch
+
+6) 𝐏𝐫𝐨𝐛𝐥𝐞𝐦
+What if more than one developer is working on the same branch and the other developer pushed on the changes on the branch before you.
+You need to take a fresh pull for new commits, right? 
+Generally, we use the git pull command to fetch the fresh changes and merge them into your local branch.
+
+𝐒𝐨𝐥𝐮𝐭𝐢𝐨𝐧
+But this won’t work as we need to do a rebase.
+Rebase is used to fetch the latest changes from the remote and applies them before your local commit.
+ 
+Now, there can be multiple scenarios you will face such as other developers and you were working on the same part of the code. Then, this will get you in trouble for merge conflicts.
+Here you have two choices, the first one is to undo your old changes and the second one is to resolve your all merge conflicts and push your changes to remote.
+In the first scenario, you can use the below command to abort the rebase.
+git rebase --abort
+
+In the second scenario, if you resolved your merge conflicts, then continue the rebase.
+git rebase --continue
+
+At the end of both scenario, you need to push changes with --force-with-lease argument. Otherwise you will get error.
+
+This might be a basic tip for some of you, but it saves a lot of time by avoiding any confusion while doing git push(avoid—-force 😉).
+
+7) 𝐏𝐫𝐨𝐛𝐥𝐞𝐦
+You have deployed your pods through Deployment, DaemonSet, StatefulSet, etc resources, and it is attached with some ConfigMaps. Now you want to update those pods to fetch new configMaps. The simple solution is to delete the resource that does not come under best practices.
+
+𝐒𝐨𝐥𝐮𝐭𝐢𝐨𝐧
+Instead of deleting the resource, Kubernetes provided a rollout command to work with new changes. With the help of this, it will fetch new changes from your configMaps or Secrets and deploy the pods with fresh configMaps.
+
+You can leverage auto-updates the configMaps by mounting it as a volume to check after a specified time interval without restarting your pod. But it does not work in real time.
+
+8) 𝐏𝐫𝐨𝐛𝐥𝐞𝐦
+If your server storage is full or getting full because you were building multiple docker images and you forgot to delete them frequently.
+It’s okay because you can use a shell script or an ad-hoc command for it.
+
+But once you delete those images, you observe that your storage is still full or partially full. 
+
+𝐔𝐬𝐞 𝐜𝐚𝐬𝐞
+Here comes the 𝗱𝗼𝗰𝗸𝗲𝗿 𝘀𝘆𝘀𝘁𝗲𝗺 𝗽𝗿𝘂𝗻𝗲 command to save you.
+
+This command will help you to free your storage as there are many unusual containers, dangling images(untagged images), volumes, etc. 
+You can utilize the docker container prune if containers are running on your server. But the system prune command works globally.
+
+9) If your multiple pods are getting Error/Evicted status and you want to delete them in one go. Instead of deleting numerous pods individually, you can use this command to save a few seconds or minutes.
+
+Note: Evicted pods are those that cannot be scheduled because of issues on the nodes; for instance, nodes not being ready or nodes being drained, among others.
+
+Small tips can save a lot of time. 
+If you do have any new learning, put it in the comments section.
+
+10)  hashtag#Scenario1: Imagine you have joined as a hashtag#Devops consultant on a financial project where a critical payment processing API that handles highly sensitive data is running on a container. Their primary requirement is to ensure the API’s security in production by reducing the container's attack surface.
+
+ hashtag#Challenge: The traditional Docker images they were using included utilities and shells that are unnecessary for running the API but can be exploited in a security breach. You are tasked to minimised the attacking surface for the container.
+
+ hashtag#Solution: You decided to use a 𝐃𝐢𝐬𝐭𝐫𝐨𝐥𝐞𝐬𝐬 image, so that it eliminates all non-essential components, leaving only the runtime environment and necessary libraries for the API. This reduces the attack surface significantly, as there are no shells or package managers that can be exploited. As a result, the system becomes more secure, ensuring that the API is protected from potential vulnerabilities.
+ 𝐖𝐡𝐲 𝐃𝐢𝐬𝐭𝐫𝐨𝐥𝐞𝐬𝐬 𝐨𝐯𝐞𝐫 𝐒𝐜𝐫𝐚𝐭𝐜𝐡 ? 
+ 1. Distroless provides the necessary 𝐫𝐮𝐧𝐭𝐢𝐦𝐞 𝐥𝐢𝐛𝐫𝐚𝐫𝐢𝐞𝐬 like TLS certificates and authentication mechanisms, which are essential for many applications. Scratch does not offer these, meaning more work is needed to manually include them.
+ 2. While Scratch also has a minimal footprint, Distroless is designed specifically with 𝐬𝐞𝐜𝐮𝐫𝐢𝐭𝐲 𝐢𝐧 𝐦𝐢𝐧𝐝 for production environments, making it the best fit when the goal is to lock down an application while maintaining functionality.
+
+hashtag#Scenario2: Imagine you are working on a project as a Devops engineer where the team of developers are working on an IoT device that collects sensor data and sends it to a central server. The application is written in Go and needs to be deployed on devices with very limited memory and storage capacity.
+
+hashtag#Challenge : The developers have build the app using a full-fledged operating system within the container which is taking up too much space, leaving little room for other necessary software on the device. You are tasked to minimise the size of the image.
+
+ hashtag#Solution: You decided to compile their Go application into a single binary, and to use the 𝐒𝐜𝐫𝐚𝐭𝐜𝐡 image to create an ultra-lightweight Docker container that contains nothing except the binary. 
+ 𝐖𝐡𝐲 𝐒𝐜𝐫𝐚𝐭𝐜𝐡 𝐨𝐯𝐞𝐫 𝐃𝐢𝐬𝐭𝐫𝐨𝐥𝐞𝐬𝐬 ?
+ 1. Scratch is completely empty, making it the smallest possible Docker image. This is ideal for environments where size is the top priority, as even Distroless includes some libraries and certificates that add to the image size.
+ 2. Scratch is the best choice when you don’t need any runtime or extra system tools. For a statically compiled Go application, Scratch allows for the most efficient, smallest possible deployment.
+
+11) #Scenario: 
+As a hashtag#Cloud & hashtag#Devops engineer, you’re working on a large project with a large number of AWS accounts under a single AWS Organization, each hosting critical workloads. As infrastructure grows, the team faces several challenges:
+
+hashtag#Challenges:
+1. Difficulty managing backups across hundreds of accounts, causing missed backups.
+2. Need for centralized monitoring of backup tasks without logging into each account individually.
+3. Consistent backup schedules, lifecycles, and retention to avoid unnecessary costs.
+4. Configuring backups for every new account creation.
+
+hashtag#Solution: 
+You implemented 𝐀𝐖𝐒 𝐁𝐚𝐜𝐤𝐮𝐩 𝐏𝐨𝐥𝐢𝐜𝐲 𝐰𝐢𝐭𝐡 𝐀𝐖𝐒 𝐎𝐫𝐠𝐚𝐧𝐢𝐳𝐚𝐭𝐢𝐨𝐧𝐬 for centralized, automated backup management:
+
+1. 𝐂𝐫𝐨𝐬𝐬-𝐚𝐜𝐜𝐨𝐮𝐧𝐭 𝐁𝐚𝐜𝐤𝐮𝐩 𝐀𝐮𝐭𝐨𝐦𝐚𝐭𝐢𝐨𝐧:
+ - Enable backup policies at the organizational level, ensuring all accounts inherit backup settings.
+ - Create an org-wide plan with schedules, lifecycles, and retention for EBS, RDS, and S3 and other required file systems.
+ - Configure a centralized backup vault in the management account.
+
+2. 𝐂𝐞𝐧𝐭𝐫𝐚𝐥 𝐌𝐨𝐧𝐢𝐭𝐨𝐫𝐢𝐧𝐠:
+ - AWS Backup’s dashboard tracks activity across all accounts. Alerts can be set for failed backups so that necessary actions can be taken.
+
+3. 𝐂𝐨𝐧𝐬𝐢𝐬𝐭𝐞𝐧𝐭 𝐏𝐨𝐥𝐢𝐜𝐢𝐞𝐬 & 𝐂𝐨𝐦𝐩𝐥𝐢𝐚𝐧𝐜𝐞:
+ - Backup policies automatically apply to new and existing accounts so no need to do additional configuration by logging to each and every account.
+ - (Optional) AWS Config to check compliance with backup rules.
+
+This solution simplifies backup management, ensures consistency, and centralizes monitoring for backup tasks, reducing manual efforts and missed backups.
+
+12) #Scenario:
+You are working as a hashtag#Cloud & hashtag#Devops engineer in a company that has a distributed architecture with services deployed across multiple VPCs in different AWS accounts. Each service, running in separate VPCs, needs to communicate with other services securely within the network using their private hashtag#dns names.
+
+hashtag#Challenge:
+You are tasked with designing and implementing a DNS architecture where:
+1. Each VPC, spread across multiple accounts, should be able to resolve private DNS names within the organization.
+2. DNS management must be centralized, so any DNS updates are easily applied across all accounts and VPCs.
+3. The solution should avoid the duplication of hosted zones in each AWS account and ensure that VPCs can securely resolve domain names without public access.
+
+hashtag#Solution:
+To meet this challenge, you decided to create a 𝐜𝐞𝐧𝐭𝐫𝐚𝐥𝐢𝐳𝐞𝐝 𝐩𝐫𝐢𝐯𝐚𝐭𝐞 𝐡𝐨𝐬𝐭𝐞𝐝 𝐳𝐨𝐧𝐞 in 𝐀𝐖𝐒 𝐑𝐨𝐮𝐭𝐞 53 (preferably a separate dedicated AWS Account )that will have all the private dns records for the services spread across multiple AWS accounts.The steps to implement the solution are:
+
+1. 𝐂𝐫𝐞𝐚𝐭𝐞 𝐚 𝐏𝐫𝐢𝐯𝐚𝐭𝐞 𝐇𝐨𝐬𝐭𝐞𝐝 𝐙𝐨𝐧𝐞: 
+ Let’s assume Account A is the account for DNS management , create a Route 53 private hosted zone that contains DNS records for the internal services.
+
+2. 𝐒𝐞𝐭 𝐮𝐩 𝐕𝐏𝐂 𝐀𝐬𝐬𝐨𝐜𝐢𝐚𝐭𝐢𝐨𝐧𝐬: 
+ Associate the private hosted zone with VPCs in Account A. This will allow the VPCs in Account A to resolve DNS queries for services within the zone.
+
+4. 𝐀𝐬𝐬𝐨𝐜𝐢𝐚𝐭𝐞 𝐕𝐏𝐂𝐬 𝐟𝐫𝐨𝐦 𝐎𝐭𝐡𝐞𝐫 𝐀𝐜𝐜𝐨𝐮𝐧𝐭𝐬: 
+ In each of the other AWS accounts, associate their respective VPCs with the shared private hosted zone created in Account A. Once associated, these VPCs will be able to resolve internal service names.
+ 4𝐚. Authorize the VPC association from the Private Hosted Zone owner account using AWS CLI or IAC.
+ 4𝐛. Associate the VPC with the Private Hosted Zone from the other account where the VPC is present using AWS CLI or IAC.
+
+5. 𝐄𝐧𝐬𝐮𝐫𝐞 𝐭𝐡𝐞𝐫𝐞 𝐢𝐬 𝐜𝐨𝐧𝐧𝐞𝐜𝐭𝐢𝐯𝐢𝐭𝐲 𝐰𝐢𝐭𝐡𝐢𝐧 𝐭𝐡𝐞 𝐀𝐖𝐒 𝐀𝐜𝐜𝐨𝐮𝐧𝐭𝐬 𝐕𝐏𝐂’𝐬.
+
+This centralized DNS management ensures that all internal services can communicate securely using private DNS names, while any changes to DNS records in the private hosted zone are automatically applied across all associated VPCs. The solution avoids duplicating hosted zones in multiple accounts, reducing the administrative overhead.
+
+13) #Scenario:
+As a hashtag#DevOps engineer, you are tasked with deploying infrastructure for three environments: dev, test and prod. The resources to be created (like EC2 instances, S3 buckets, etc.) are the same for each environment, but the configuration values, such as instance type,ami, or bucket names, differ.
+
+hashtag#Challenge:
+How can you efficiently reuse the same Terraform configuration for multiple environments (dev, test, prod) while ensuring that the configuration values (e.g., instance type,ami , bucket names) can be customized for each environment without duplicating code?
+
+hashtag#Solution
+One of the solution that will address this challenge is by following the below steps.
+Here's how it works:
+1. Define hashtag#TerraformModules: The module will contain resource definitions, such as EC2 instances or S3 buckets. It will be parameterized with variables to handle configurable values (e.g., instance type, bucket name etc).
+2. Create Environment-specific hashtag#tfvars files: Each environment (dev, test, prod) will have its own `.tfvars` file that defines the environment-specific values (e.g., instance type, number of instances).
+3. Call the module in the hashtag#root configuration: The root configuration will have the modules with their inputs as variable.
+4. When running `terraform apply`, you can specify the appropriate environment configuration file like this:
+
+terraform apply -var-file="dev.tfvars"
+
+This way, you reuse the same module across multiple environments, while passing environment-specific configurations through variables. It keeps the code DRY and ensures clean, maintainable infrastructure code for all environments.
+
+14) #Scenario: Imagine as a hashtag#DevOps engineer, you are responsible for creating a hashtag#Jenkins pipeline for testing a web application which has various frontend elements that needs to be compatible across multiple browsers such as Chrome, Firefox, Safari, and Edge.
+
+hashtag#Challenge: Your goal is to test the application on all the required browsers. However, you want to simplify the pipeline configuration to avoid creating separate job setups for each browser. Additionally, you want to minimize pipeline execution time to make the process more efficient.
+
+hashtag#Solution: One of the solutions you can implement is using Jenkins’ Declarative Pipeline with the hashtag#matrix block. This feature allows you to test the application in parallel across multiple browser environments. By defining a matrix of browser types, Jenkins can execute the same job across different browser environments, reducing configuration complexity and speeding up the testing process.
+
+hashtag#Jenkinsfile [Sample]
+pipeline {
+ agent none
+ stages {
+ stage('CompatibilityTest') {
+ matrix {
+ agent any
+ axes {
+ axis {
+ name 'BROWSER'
+ values 'firefox', 'chrome', 'safari', 'edge'
+ }
+ }
+ stages {
+ stage('Test') {
+ steps {
+ echo "Do Test for ${BROWSER}"
+ }
+ }
+ }
+ }
+ }
+ }
+}
+
+hashtag#GoodToKnow: In the Jenkins matrix block, the keywords hashtag#axes and hashtag#axis help define the parameters for parallel job execution.
+ hashtag#Axes: A collection of one or more axis elements. In a testing scenario, this could represent all the environments you want to test (e.g., browser types).
+ hashtag#Axis: Defines a single variable and its possible values. For example, in cross-browser testing, you could have an axis for BROWSER, with values chrome, firefox, safari, and edge.
+
+When Jenkins processes the matrix block, it will create parallel jobs for every combination of the defined axis values. In our browser testing example, the pipeline would execute the same test on each browser in parallel, ensuring that your application works across all environments with minimal configuration effort.
+
+15) #Scenario:
+As a hashtag#DevOps engineer you are running microservices on Kubernetes. Now lets say there is a `payment-service` running which is a critical component that handles sensitive transactions. It should only communicate with the `fraud-service` and `customer-service`. However, a recent security audit revealed that other pods, even from different namespaces, can access the `payment-service` pods, posing a serious risk.
+
+hashtag#Challenge:
+You are tasked to secure the `payment-service` pods so it only allows communication with the `fraud-service` and `customer-service` pods, while blocking all other pods, regardless of their namespace. The solution must enforce these restrictions without causing any issues to the application functionality.
+
+hashtag#Solution:
+Kubernetes hashtag#NetworkPolicies can address this challenge. By defining specific network policies, you can restrict the `payment-service` pods to only accept traffic from the `fraud-service` pods and `customer-service` pods , effectively blocking all unauthorized access and ensuring the security of the transactions. If you already have a CNI plugin that supports network policy on your kubernetes cluster then you are good to implement or else you need to install the CNI plugin first and then the network policy.
+
+16) #Scenario:
+As a hashtag#Devops engineer, you are managing a large-scale microservices architecture deployed on hashtag#Kubernetes to process financial transactions. One of their critical services is a data reconciliation task that ensures all financial transactions across different systems (e.g., payment gateways, banking systems) are consistent. Currently, the reconciliation process is done manually by triggering a script after the close of business hours. The reconciliation task requires access to multiple external APIs and databases.
+
+hashtag#Challenge: Below are the challenges you have to resolve with automation which comes with manual process.
+1. hashtag#Automation: The task should run with manual intervention.
+
+2. hashtag#ErrorHandling: The system must be capable of handling API rate limits, timeouts, and transient network issues, automatically retrying the task if a failure occurs.
+
+3. hashtag#Scalability: The solution must be able to scale based on the requirements.
+
+4. hashtag#Auditability: Tracking capabilities like status checks, starting and completion, errors etc for the task should be captured.
+
+5. hashtag#ResourceOptimization: The solution should only consume resources during the reconciliation process.
+
+hashtag#Solution:
+A Kubernetes hashtag#CronJob is the ideal solution for this scenario. A CronJob allows you to schedule tasks to run at specific times, similar to how a traditional cron job works on Linux systems. Here's how it addresses the challenges:
+
+1. Automation Requirement: The CronJob is configured to automatically trigger the reconciliation task at a specified time each day. 
+
+2. Error Handling: The CronJob can be configured with retry logic, ensuring that if the task fails due to API rate limits, timeouts, or network issues, it will retry according to the defined policy. Additionally, Kubernetes’ native support for managing failed jobs allows for robust error handling.
+
+3. Scalability: The CronJob can be set up to run the reconciliation task in parallel, with each job instance processing a subset of the transactions. Kubernetes can automatically scale the resources (e.g., CPU, memory) allocated to these jobs based on the workload, ensuring that the task completes within the required timeframe.
+
+4. Auditability: Kubernetes keeps a history of job executions, including logs and status information. 
+
+5. Resource Optimization: With CronJobs, resources are only consumed when the job is running. Once the task is complete, the associated pods are terminated, freeing up resources for other workloads.
+
+By leveraging Kubernetes CronJobs, you can automate the reconciliation process, handle complex error scenarios, ensure scalability, maintain auditability, and optimize resource usage.
+
+17) #Scenario:
+As a DevOps engineer, you're tasked with deploying microservices to a new EKS cluster. The EKS cluster is already set up with all necessary controllers and namespaces and required configuration done with gitlab . There is an existing GitLab CI/CD pipeline that builds and deploys microservices to an on-premises Kubernetes cluster, using reusable templates for deployment. Helm is used for deployment with respective `values.yaml` and `configmap.yaml` files for each environment.
+
+hashtag#Challenge:
+You need to use the same pipeline to deploy to EKS since the build and other stages are the same. However, you must ensure that nothing disrupts the existing CI/CD pipeline, which is currently used for production. You can update the template and pipeline but must avoid breaking the existing setup.
+
+hashtag#Solution: There are obviously other ways to do but below is the one for your reference.
+
+Brief Steps:
+1. Create a branch out of the existing reusable template in your GitLab repository.
+2. Add a new stage to the template for deployment to the EKS cluster, ensuring this stage occurs after the build and other existing stages.
+3. To test the deployment using the modified template, create a branch from the project repository where the GitLab pipeline is stored.
+4. Update the `include` section in the pipeline YAML file to reference the branch you created for the modified template.
+5. (Optional )Update the Helm repository with the new `configmap.yaml` and `values.yaml` and other files for the application if required.
+6. Run the pipeline to test the deployment.
+7. Once the deployment is successful, and the application is tested, merge the template branch back to the main branch.
+8. Update the pipeline YAML to reference the main branch in the `include` section.
+9. Finally, merge the project repository branch back to the main branch.
+
+This approach ensures that the existing CI/CD pipeline remains unaffected while enabling deployment to the new EKS cluster.
+
+18) #Scenario:
+You are working as a hashtag#DevOps engineer for a company that processes sensitive customer data, including payment transactions and personal information. The company has recently migrated its applications to Amazon EKS, leveraging microservices architecture plus cloud for obvious reasons.
+
+Several critical services communicate with each other within the EKS cluster.
+
+hashtag#Challenge:
+You need to implement a solution that ensures only authenticated services can communicate with each other within the EKS cluster. Furthermore, the security mechanism should automatically handle service authentication and ensure that compromised services cannot impersonate others and service to service communication should be encrypted.
+
+hashtag#Solution:
+The challenge can be addressed by implementing “Mutual TLS (mTLS)” within the EKS cluster. Here's how mTLS resolves the challenge:
+
+1. Mutual Authentication: mTLS ensures that both the client and server in each service-to-service communication authenticate each other. This prevents unauthorized services from impersonating legitimate ones, ensuring that only trusted services are allowed to communicate.
+
+2. Encryption of Data in Transit: mTLS automatically encrypts all data exchanged between services
+
+3. Zero Trust Security Model: mTLS supports the Zero Trust security model, where no service is trusted by default. Each service must prove its identity before being allowed to communicate, ensuring that compromised services cannot connect to other services.
+
+By integrating a service mesh like Istio or Linkerd or App Mesh with EKS, mTLS can be enforced with minimal manual intervention. The service mesh manages the generation, distribution, and rotation of the certificates required for mTLS, simplifying the implementation process.
+
+
+19) #Scenario
+As a DevOps engineer, you're tasked with setting up CI/CD pipelines for 100 different applications. Each pipeline follows the same stages , lets assume below are the stages
+1. Static Code Analysis
+2. Build Docker Image
+3. Scan Images for Vulnerabilities
+4. Push to Artifactory
+5. Deploy 
+
+hashtag#Challenge
+The challenge is to establish a maintainable and scalable solution without duplicating the same logic across 100 pipelines, ensuring scalability and easy maintainability.
+
+hashtag#Solution:
+To solve these challenges , 
+1. For hashtag#Jenkins users : You can use “Jenkins Shared Libraries”. 
+2. For hashtag#Gitlab users: You can use reusable “Templates”.
+3. For hashtag#GithubActions users : Use github reusable “Workflows”.
+
+Using this approach allows you to define common pipeline stages in one place and reuse them across all 100 pipelines. This reduces duplication, ensures consistency, and makes maintenance easier. For customisation use variables in the shared Libraries/Templates/Reusable Workflow so that those values can be passed on the application pipeline as per each environment needs.
+
+20) #Scenario
+Imagine you are working for a company which has a complex infrastructure with multiple AWS VPCs across different regions and an on-premises data center housing legacy applications. Everything including on-prem data centres are well connected using Transit Gateway, Direct Connect. Most of their data is stored in an S3 bucket in the primary region. However, as data retrieval requests increase from both AWS regions and the on-prem data center, they faces challenges with latency and also concerned about security.
+
+hashtag#Challenge
+You are tasked to find a solution that fulfils the below criteria.
+
+1. Reduces Latency: Ensures fast, reliable access to S3 from various AWS regions and the on-premises data center.
+2. Enhances Security: Prevents data from crossing the public internet, especially during interactions with the on-premises data center.
+
+hashtag#Solution
+To solve these challenges, you decided to use S3 Gateway Endpoint and S3 Interface Endpoint
+
+1. S3 Gateway Endpoint
+ - Allows VPC resources to securely access S3 without going over the public internet. This is ideal for secure data transfers between AWS in the same region and also you can save a lot of cost.
+
+2. S3 Interface Endpoint:
+ - Provides a dedicated, private connection between the VPC and S3 using AWS PrivateLink, reducing latency for other AWS regions or the on-prem data center that require fast access to S3.
+
+Together, these endpoints ensure that applications can securely and efficiently access S3, meeting both latency and security requirements across all regions and the on-premises data center.
+
+21) #Scenario: 
+Imagine as a Cloud and DevOps Engineer, you’re working on a project with three AWS accounts within a single AWS Organization
+
+1. Network Account: Manages the VPC, networking resources, and on-prem connectivity.
+2. Application Account 1:Used by the first application team.
+3. Application Account 2: Used by the second application team.
+
+hashtag#Challenge:
+The application teams want to focus only on their applications without taking any operational overhead on the networking resources. The app 1 workloads in account 1 needs to communicate with account 2 app workloads and also with on-prem resources, all while avoiding complex and costly networking setups like VPC peering or Transit Gateways in their accounts.
+
+hashtag#Solution:
+To address these needs, you implemented ‘subnet sharing’ from the Network Account to the Application Accounts. This allows both application teams to deploy their workloads within shared subnets, enabling seamless communication between applications and with on-prem resources. Also each application account has control over their respective workloads only. The solution is simple, cost-effective, and avoids the need for additional networking resources in the application accounts.
+
+PS: Not all scenario fits the sharing of subnets , Transit Gateway and Peering are equally important where there are large number of accounts, cross region and complex routing needs are required.
+
+22) #Scenario:
+Imagine as a hashtag#DevOps engineer you are working on a Node.js application that is intended to be compatible with multiple versions of Node.js. The application has several dependencies that might behave differently across Node.js versions like 14.x, 16.x, 18.x, and 20.x. The team is using a hashtag#GitLab CICD pipeline for the application, and there are multiple jobs testing the application with different Node.js versions.
+
+hashtag#Challenge:
+Your goal is to optimize the pipeline so that it is tested with all the Node.js versions. However, you need to optimize it in a way that reduces complexity by eliminating separate job configurations for each test. Additionally, you want to minimize the pipeline runtime to make the development process faster.
+
+hashtag#Solution:
+One of the solutions you implemented is using the '𝐩𝐚𝐫𝐚𝐥𝐥𝐞𝐥:𝐦𝐚𝐭𝐫𝐢𝐱' feature in GitLab CICD. This feature allows you to define a matrix of configurations in which your job will run in parallel across multiple combinations. In this case, you can use the matrix keyword to specify different Node.js versions, so your job will automatically run across each version without needing separate job configurations.
+
+Here's how you can configure it:
+
+yaml
+node-req:
+ image: node:$VERSION
+ stage: lint
+ script:
+ - your test script/command
+ parallel:
+ matrix:
+ - VERSION: ['14', '16', '18', '20']
+
+With this setup, the job will execute four times, each with a different Node.js version. This approach reduces the complexity of pipeline configuration and speeds up the testing process for different Node.js environments.
+
+hashtag#GoodToKnow: This GitLab CI feature can be used where you need to run your app in different configurations, OS versions, programming language versions, etc
+
+23) #Scenario
+Imagine you are working as a hashtag#Devops engineer in a large software company that frequently deploys updates to its microservices architecture. The company has multiple development teams which uses Github Enterprise , are responsible for different services. The company uses hashtag#GitHub Actions to manage deployments. 
+
+hashtag#Challenge
+The company wants to enforce specific criteria such as requiring approval from designated team leads before deployment to production environments and to avoid unauthorised deployments.
+
+hashtag#Solution
+One of the solution that you can leverage is GitHub's deployment protection rules feature. By configuring these rules, you can Implement Approval Workflow and prevent unauthorized deployments
+
+Brief Configuration overview:- (for detailed steps please refer to github docs)
+* Under your repository name, click on Settings.
+* In the left sidebar, click Environments.
+* Select the environment you want to configure. 
+* Configure the deployment protection rule.
+* Click Save protection rules.
+
+24) #Scenario: Imagine you are are working as a hashtag#Cloud & hashtag#Devops engineer on a project where there is a step function workflow which performs nightly data aggregation tasks. The workflow is designed to collect data from various sources, process it, and generate a report.
+
+hashtag#Challenge: You have been tasked to ensure the step function runs automatically every night except on weekends . Additionally the solution should be serverless and if possible it should be a AWS managed service.
+
+hashtag#Solution: One of the solution is EventBridge Scheduler which is a serverless solution that allows you to create, run, and manage tasks from one central, managed service. So you decided to configure a Event Bridge schedule with cron expression and as target as the step function. 
+
+hashtag#Good_to_Know: EventBridge Scheduler supports templated target that invoke common API operations, as well as universal targets that you can customize to invoke over 6,000 API operations across more than 270 services.
+
+25) #Scenario: As a Cloud and Devops engineer you are working for a company which has multiple VPCs in AWS connected to its on-premises data center using AWS Direct Connect and Amazon VPN. The company's internal applications require DNS resolution for both AWS-hosted services and on-premises resources. You have been tasked to ensure that DNS queries for internal resources are properly resolved, whether the queries originate from the VPCs or the on-premises environment.
+
+hashtag#Challenge:
+- The company's on-premises environment needs to resolve DNS queries for AWS-hosted resources, and similarly, AWS VPCs need to resolve DNS queries for on-premises resources.
+ -  Ensure consistent and accurate DNS resolution across both environments without exposing internal DNS records to the public internet and ensure that DNS queries are routed securely between the on-premises environment and the VPCs.
+
+hashtag#Solution: One of the reliable solution is to use Route53 resolver. Route 53 Resolver endpoints and forwarding rules allow you to forward traffic between your Amazon VPC and on-premises data center without having to deploy additional DNS servers or updating the DHCP option set. 
+
+Below is the basic outline of the bare minimum configurations that is required.
+
+Set Up Route 53 Resolver Endpoints:
+- Inbound Endpoint: Create an inbound resolver endpoint in AWS Route 53 to allow DNS queries from on-premises servers to resolve AWS resources.
+- Outbound Endpoint: Create an outbound resolver endpoint in AWS Route 53 to forward DNS queries from AWS VPCs to the on-premises DNS servers.
+
+Configure DNS Forwarding Rules:
+- On-Premises to AWS: Configure DNS forwarding rules on your on-premises DNS servers to forward queries for AWS-hosted domains to the Route 53 inbound endpoint.
+- AWS to On-Premises: Set up DNS forwarding rules in Route 53 Resolver to forward queries for on-premises domains to the outbound endpoint, which sends queries to the on-premises DNS servers.
+
+Associate DNS Rules with VPCs:
+- Link the DNS forwarding rules to the appropriate VPCs using Route 53 Resolver rule associations. This ensures that queries from the VPCs are routed correctly according to the forwarding rules.
+
+The above steps covers only the basic configuration , Depending upon the scaling and multi-account orgs, suitable architecture should be chosen.
+
+26) #Scenario: Imagine you're working with Terraform and managing multiple .tfvars files to define your infrastructure variables. 
+
+hashtag#Challenge: How do you ensure that the correct variable values are applied, especially when dealing with multiple .tfvars files with potentially conflicting settings?
+
+hashtag#Solution: Understanding how Terraform prioritizes these files can streamline your configuration management and avoid unexpected results.Here’s a quick glance on how Terraform handles variable files:
+
+hashtag#Automatic .tfvars Files:
+abc.auto.tfvars and terraform.tfvars are picked up automatically by Terraform.
+abc.auto.tfvars has precedence over terraform.tfvars.
+hashtag#Example: 
+- abc.auto.tfvars has below values
+ instance_type = "t3.medium"
+
+- terraform.tfvars has below values 
+ instance_type = "t2.micro"
+
+Result: Terraform will use instance_type = "t3.medium" during terraform plan/apply.
+
+2. Custom .tfvars Files:
+Custom files (e.g., xyz.tfvars) require you to explicitly specify them using the -var-file option. These files override all other .tfvars settings when provided.
+hashtag#Example:
+- xyz.tfvars has below value
+ instance_type = "p3dn.24xlarge"
+
+When specified during terraform plan or terraform apply, instance_type = "p3dn.24xlarge" will be used. If xyz.tfvars does not include all variables, Terraform will use values from terraform.tfvars or abc.auto.tfvars for any missing variables.
+
+Now you know this, you can control which variables are applied and manage multiple .tfvars files effectively in Terraform.
+
+Hope this helps streamline your Terraform configurations!
+
+27) #Scenario : Imagine you have two EKS clusters in separate VPCs with no direct network connectivity (like Transit Gateway or VPC peering) between the two services and you are not allowed to make a connection using TGW or VPC peering between the two VPC’s. 
+
+hashtag#Challenge: There is requirement that an application from VPC-A EKS cluster wants to connect a service on VPC-B EKS cluster. How can you make that happen?
+
+hashtag#Solution : By Using hashtag#AWS PrivateLink , NLB, VPC Endpoints. Here is a brief explanation of the steps.
+
+1. Create a Network Load Balancer (NLB) for the microservice in VPC B.
+
+2. Create a VPC Endpoint Service in VPC B and Register the NLB as a VPC Endpoint Service. Modify the microservice in VPC B to be accessible via the NLB.
+
+3. Create an Interface VPC Endpoint in VPC A that connects to the VPC Endpoint Service in VPC B. This will create an endpoint network interface in VPC A, providing a private IP address to access the service in VPC B.
+
+4. Update Security Groups:
+ - Ensure the security groups in VPC B (associated with the NLB and the microservice) allow inbound traffic from the VPC Endpoint in VPC A.
+ - Similarly, configure the security groups in VPC A to allow outbound traffic to the VPC Endpoint.
+
+5. Modify the Microservice in VPC A to Use the VPC Endpoint
+
+By following these steps, you can enable secure, private communication between microservices in different EKS clusters without exposing them to the internet or requiring direct network connectivity between the VPCs.
+
+28) #Scenario:- As a hashtag#Devops engineer you and your team are being tasked to adopt containerization for your Dotnet Application. Your team decided to deploy the application on AWS ECS Fargate to avoid less management overhead and use the benefits of serverless . You have an Application Load Balancer (ALB) that is configured to receive only HTTPS traffic in front of your ECS Fargate service on which the application will run. However, due to security and compliance requirements, you need to ensure that the traffic from the ALB to your .NET Core application containers is also encrypted over port 443.
+
+hashtag#Challenge:
+Your team needs to implement SSL for your .NET Core application running in containers on ECS Fargate, ensuring that all internal and external communication is secure. 
+
+hashtag#Solution
+In my latest video, I provide a comprehensive guide on how to containerize a .NET Core application with SSL enabled. Here’s what you’ll learn:
+- What is Containerisation.
+- Understanding of the Dockerfile.
+- Importance of SSL.
+- Step by Step Understanding of building a Dotnet application docker image with SSL Enabled.
+- Finally Running the application.
+
+29) #Scenario : You have a jenkins pipeline created , jenkinsfile is stored in the github. For example lets say the pipeline has multiple stages like checking out the source code, static code analysis, building a docker image, checking vulnerabilities, testing the image, deploying the image etc. And let’s consider each of the stages takes around 30-45 minutes. The pipeline is triggered and imagine the pipeline failed at one of the stage after 1.5 hrs. Now as a devops engineer you are tasked to fix that particular failure stage of the pipeline. Lets consider you have fixed the issue and want to test the pipeline. Will you execute the pipeline from start ? No right as it will cost you another 1.5 hours . Then how will you test the pipeline?
+
+hashtag#Solution: One of the way to resume the pipeline from the failure stage is to install Blue Ocean plugin and resume the pipeline from the failure stage. With this technique you can easily manage your time and work, unless there is any additional complexities involved on the pipeline which needs to be started from beginning.
+
+30) Application Error Notifications running on ECS.
+
+An application running on ecs and the logs are populated in cloudwatch. Now the application team wants that if there is a specific error comes then they should get a notification. What solution you can implement to fulfill this requirement ?
+
+One of the solution is: 
+- Create a Metric Filter: Set up a metric filter in CloudWatch with the specific error pattern the app team want to monitor in the log group.
+- Set Up an Alarm: Create an alarm in CloudWatch that triggers when the metric threshold is greater than or equal to 1.
+- Configure Notifications: Set the alarm to send notifications using SNS.
+
+This approach ensures you receive automatic alerts for critical errors, helping the app team to maintain application reliability.
+
+31) 𝐓𝐢𝐩 𝐟𝐨𝐫 𝐂𝐥𝐨𝐮𝐝 𝐚𝐧𝐝 𝐃𝐞𝐯𝐨𝐩𝐬 𝐄𝐧𝐠𝐢𝐧𝐞𝐞𝐫𝐬 :- 𝐍𝐚𝐯𝐢𝐠𝐚𝐭𝐢𝐧𝐠 𝐢𝐬𝐬𝐮𝐞𝐬 𝐰𝐡𝐞𝐧 𝐲𝐨𝐮 𝐡𝐚𝐯𝐞 𝐦𝐮𝐥𝐭𝐢𝐩𝐥𝐞 𝐢𝐧𝐬𝐭𝐚𝐧𝐜𝐞𝐬 𝐨𝐟 𝐭𝐡𝐞 𝐬𝐚𝐦𝐞 𝐚𝐩𝐩𝐥𝐢𝐜𝐚𝐭𝐢𝐨𝐧 𝐛𝐞𝐡𝐢𝐧𝐝 𝐚𝐧 𝐀𝐋𝐁.
+
+I am sharing a scenario with architecture description , traffic flow , challenge and fix. 
+
+Here is the architecture , Application running on ECS Fargate where the desired count for the containers is set to 2 or more and there is an ALB in front of it to route the users traffic to the application . 
+
+𝑯𝒆𝒓𝒆'𝒔 𝒕𝒉𝒆 𝒕𝒓𝒂𝒇𝒇𝒊𝒄 𝒇𝒍𝒐𝒘:
+1. Users access the application through Route53.
+Route53 routes the traffic to ALB. (𝐑𝐨𝐮𝐭𝐞53 > 𝐀𝐋𝐁)
+2. ALB forwards the request to the application running on ECS Fargate.(𝐀𝐋𝐁 > 𝐂𝐨𝐧𝐭𝐚𝐢𝐧𝐞𝐫𝐬 𝐨𝐧 𝐄𝐂𝐒 )
+3. The application redirects users to the SSO provider for authentication.(𝐂𝐨𝐧𝐭𝐚𝐢𝐧𝐞𝐫𝐬 𝐨𝐧 𝐄𝐂𝐒 > 𝐒𝐒𝐎 𝐏𝐫𝐨𝐯𝐢𝐝𝐞𝐫)
+4. The SSO provider authenticates the users and redirects them back to the application via ALB. (𝐒𝐒𝐎 𝐏𝐫𝐨𝐯𝐢𝐝𝐞𝐫 > 𝐑𝐨𝐮𝐭𝐞53 > 𝐀𝐋𝐁 > 𝐂𝐨𝐧𝐭𝐚𝐢𝐧𝐞𝐫𝐬 𝐨𝐧 𝐄𝐂𝐒 )
+5. Users can then access the application's home page.
+
+𝑻𝒉𝒆 𝑪𝒉𝒂𝒍𝒍𝒆𝒏𝒈𝒆:
+The application, distributed across multiple containers, was struggling with SSO authentication. Users trying to access the application were redirected by the application to an SSO provider, and after successful authentication, sometimes users are facing error and not logged in to the application. By now you should be able to identify the issue.
+
+𝐓𝐡𝐞 𝐅𝐢𝐱:
+Remember 𝐀𝐋𝐁 𝐒𝐭𝐢𝐜𝐤𝐢𝐧𝐞𝐬𝐬! By enabling stickiness, the ALB ensures that once a user starts a session, they keep going to the same container, maintaining session integrity. 
+
+𝑴𝒐𝒓𝒆 𝑨𝒃𝒐𝒖𝒕 𝑨𝑳𝑩 𝑺𝒕𝒊𝒄𝒌𝒊𝒏𝒆𝒔𝒔:
+ALB provides two types of stickiness
+ 1. 𝐃𝐮𝐫𝐚𝐭𝐢𝐨𝐧-𝐛𝐚𝐬𝐞𝐝 𝐬𝐭𝐢𝐜𝐤𝐢𝐧𝐞𝐬𝐬 :- It routes requests to the same target in a target group using a load balancer generated cookie (AWSALB). The cookie is used to map the session to the target.
+ 2. 𝐀𝐩𝐩𝐥𝐢𝐜𝐚𝐭𝐢𝐨𝐧-𝐛𝐚𝐬𝐞𝐝 𝐬𝐭𝐢𝐜𝐤𝐢𝐧𝐞𝐬𝐬 :- This type of stickiness relies on an application-controlled session cookie. The application itself generates and manages the session cookie, and the ALB recognizes it to maintain stickiness.
+
+32) 𝐃𝐨𝐜𝐤𝐞𝐫 𝐋𝐨𝐠𝐠𝐢𝐧𝐠: 𝐇𝐢𝐠𝐡𝐥𝐢𝐠𝐡𝐭𝐢𝐧𝐠 𝐖𝐢𝐧𝐝𝐨𝐰𝐬 𝐇𝐮𝐫𝐝𝐥𝐞𝐬 𝐚𝐧𝐝 𝐋𝐢𝐧𝐮𝐱 𝐄𝐚𝐬𝐞
+
+When running applications inside Windows containers, accessing application logs directly from stdout and stderr isn't as straightforward compared to Linux containers. This difference arises due to how Windows and Linux handle logging mechanisms natively within their container environments.
+
+𝐂𝐡𝐚𝐥𝐥𝐞𝐧𝐠𝐞𝐬 𝐰𝐢𝐭𝐡 𝐖𝐢𝐧𝐝𝐨𝐰𝐬 𝐂𝐨𝐧𝐭𝐚𝐢𝐧𝐞𝐫𝐬
+- 𝑵𝒂𝒕𝒊𝒗𝒆 𝑳𝒐𝒈𝒈𝒊𝒏𝒈 𝑴𝒆𝒄𝒉𝒂𝒏𝒊𝒔𝒎𝒔 :- Windows containers do not write application logs directly to stdout and stderr by default, unlike Linux containers where this is a common practice.
+- 𝑨𝒄𝒄𝒆𝒔𝒔 𝒂𝒏𝒅 𝑹𝒆𝒕𝒓𝒊𝒆𝒗𝒂𝒍:- As a result, accessing logs from applications running inside Windows containers requires additional configuration or the use of specialized tools and drivers.
+
+𝐒𝐨𝐥𝐮𝐭𝐢𝐨𝐧𝐬 𝐚𝐧𝐝 𝐖𝐨𝐫𝐤𝐚𝐫𝐨𝐮𝐧𝐝𝐬
+1. 𝑬𝒗𝒆𝒏𝒕 𝑻𝒓𝒂𝒄𝒊𝒏𝒈 (𝒆𝒕𝒘𝒍𝒐𝒈𝒔): Configuring Docker containers with the etwlogs logging driver allows integration with Windows Event Tracing, enabling management of logs.
+2. 𝑻𝒉𝒊𝒓𝒅-𝑷𝒂𝒓𝒕𝒚 𝑻𝒐𝒐𝒍𝒔: Utilizing tools like Log Monitor, Loggly, Splunk, Fluentd, or others helps in redirecting and aggregating logs effectively from Windows containers.
+3. 𝑪𝒖𝒔𝒕𝒐𝒎 𝑳𝒐𝒈𝒈𝒊𝒏𝒈 𝑪𝒐𝒏𝒇𝒊𝒈𝒖𝒓𝒂𝒕𝒊𝒐𝒏: Developers often need to implement custom logging configurations within their applications to ensure logs are captured and managed appropriately in a Windows container environment.
+
+These points highlight the additional steps and considerations necessary when dealing with application logs in Windows containers compared to the more straightforward approach in Linux containers.
+
+33) Imagine you are developing or testing a docker image and you want limited resources to be used by the docker container. Is there any way to do it ? 🤔
+
+Yes we need to slightly update the docker run command with few more flags.
+
+Example
+
+docker run --cpus="1.5" --memory="512m" my_image
+
+In this example:
+
+--cpus="1.5" limits the container to use at most 1.5 CPU cores.
+--memory="512m" limits the container to use at most 512 MB of RAM.
+
+hashtag#Tips - Also try optimizing the Docker image to use a smaller base image, remove unnecessary packages and dependencies.
+
+34) Kubernetes Service Discovery: Intra-Namespace vs. Inter-Namespace Communication
+Kubernetes makes it easy for pods to communicate with each other using its built-in service discovery mechanism. Lets understand how this works within the same namespace versus across different namespaces.
+
+Intra-Namespace Service Discovery
+Within the same namespace, service discovery is straightforward. Kubernetes DNS automatically resolves the service name to its corresponding IP address. 
+Example:
+- Namespace: my-ns
+- Service Name: my-service
+- Pod: my-pod
+To access my-service from my-pod, you can simply use the service name:
+curl http://my-service
+
+Inter-Namespace Service Discovery
+To access services on other namespace , it requires using the Fully Qualified Domain Name (FQDN). The FQDN includes the service name, namespace, and cluster domain.
+Example:
+- Source Namespace: source-namespace
+- Target Namespace: target-namespace
+- Service Name in target Namespace: my-target-service
+- Pod in Source Namespace: test-pod
+To access my-target-service from test-pod, use the FQDN:
+curl http://my-target-service.target-namespace.svc.cluster.local
+
+35) Understanding AWS Cutomer Managed vs Inline Policy
+
+You have two types of policies that you can begin with :- customer managed and inline policy . Both are designed to manage permissions, so why did AWS create two different types? 🤔
+
+Lets Understand both first.
+
+Customer managed policies are standalone policies that you create and manage independently. They can be attached to multiple users, groups, or roles. The main advantages include:
+
+1. Reusability: Since these policies are independent, they can be reused across different entities within your AWS environment. If you need the same set of permissions for several roles, you only need to create the policy once and attach it wherever necessary.
+
+2. Version Control and Tracking: AWS allows you to view and manage different versions of your customer managed policies. This helps in maintaining a history of changes, which is essential for compliance and auditing.
+
+3. Central Management: These policies can be managed from a central location, making it easier to update permissions across multiple entities simultaneously. If a change is needed, you update the policy in one place, and it affects all attached entities.
+
+Inline policies are policies that are embedded directly into a single entity. Their benefits include:
+
+1. Granular Control: Since they are attached directly to an individual user or role, inline policies provide more granular control over permissions. This is useful for creating highly specific permissions that are unique to a particular entity.
+
+2. Tighter Coupling: Inline policies are tightly coupled with the entity they are attached to. If the entity is deleted, the inline policy is also deleted, ensuring there are no orphaned policies left behind.
+
+3. Simplified Permissions Management: For scenarios where a single entity needs unique permissions that won’t be reused, inline policies can be simpler and more straightforward to manage.
+
+So why two types ?
+
+By providing both types, AWS allows organizations to choose the best approach based on their specific needs, balancing between centralized management and detailed, entity-specific permissions.
+
+36)  Use Case of Using AWS Cost Explorer with Tags🚀
+
+Imagine you're the owner of a powerful platform used by various project teams within your organization. Each team leverages the platform to drive their own project workloads. But as the platform owner, you're faced with a crucial question
+
+💡 How do you accurately track and manage the cost of AWS resources utilized by each project team?
+
+This is where AWS Cost Explorer and Tagging comes into play. 
+
+1. Tag Your Resources: Begin by tagging your AWS resources with the appropriate project cost center. This is essential to segregate and identify the expenses incurred by each team.
+
+2. Leverage AWS Cost Explorer: Use the powerful features of AWS Cost Explorer to fetch detailed usage data based on your tags. With this tool, you can analyze costs on a daily, monthly, or custom timeframe to meet your specific needs.
+
+By following these steps, you can:
+
+🔍 Gain transparency into project-specific AWS costs.
+📊 Generate insightful reports to optimize budget allocation.
+📈 Empower your teams to make data-driven decisions.
+
+37) Running Containers on AWS Lambda vs. ECS Fargate: Which to Choose When?🚀
+
+With the support of AWS lambda to run containers we have got a new service to choose from to run containerized applications.
+
+Choose AWS Lambda When:
+
+1. Event-Driven Applications: Ideal for applications triggered by events like HTTP requests or file uploads.
+
+2. Short-Lived Processes: Optimized for tasks that complete quickly, ensuring cost efficiency.
+
+3. Variable Workloads: Handles unpredictable traffic spikes with seamless auto-scaling.
+
+4. If your application Docker images are upto 10gb and execution duration is 15 minutes.
+
+Choose ECS Fargate When:
+
+1. Long-Running Applications: Best for continuous, persistent workloads.
+
+2. Full Control Over Environment: Offers customization of networking, storage, and configurations.
+
+3. Consistent Workloads: Cost-effective for stable, predictable workloads.
+
+4. Complex Orchestration: Suitable for applications needing complex service management.
+
+38) When a Dockerfile is run, it goes through several stages to create a Docker image. Here's a detailed overview of what happens :
+
+Dockerfile Parsing
+
+Syntax Check: Docker parses the Dockerfile to check for syntax errors.
+Instructions Processing: Docker reads the instructions one by one from top to bottom.
+Image Build Process
+Docker uses the Docker Engine to build the image from the Dockerfile. This process can be broken down into several steps:
+
+a. Base Image
+
+FROM Instruction: The build starts with the FROM instruction, which specifies the base image. Docker checks if this image is available locally. If not, it pulls the image from a Docker registry (e.g., Docker Hub).
+
+b. Layer Creation
+
+Each instruction in the Dockerfile results in a new layer in the image.
+RUN, COPY, ADD Instructions: For each instruction, Docker creates a new layer on top of the previous one.
+RUN: Executes commands in the shell.
+COPY/ADD: Copies files from the host filesystem into the image.
+Intermediate Containers: For each instruction that adds a new layer, Docker creates an intermediate container, performs the instruction inside this container, and then commits the changes as a new layer.
+
+c. Caching
+
+Layer Caching: Docker uses a caching mechanism to speed up builds. If a layer hasn’t changed (the instruction and context are identical), Docker reuses the cached layer instead of rebuilding it.
+
+d. Final Image Assembly
+
+Commit Final Layer: After all instructions have been processed and all layers created, Docker commits the final layer as the image.
+Image ID: The final image is assigned a unique ID.
+
+e. Cleanup
+
+Removing Intermediate Containers: Once the build is complete, Docker removes the intermediate containers used during the build process.
+
+f. Tagging
+
+Tagging the Image: Docker tags the built image with the name specified in the docker build command.
+
+39) A sneak peek on how GitHub Actions automates your workflows? Here’s what happens behind the scenes:
+
+🔔 Triggering Events: When you push code, create a pull request, or trigger a scheduled event, GitHub Actions detects these changes based on your workflow configuration.
+
+📜 Workflow Dispatcher: The event triggers the workflow dispatcher, which reads the YAML workflow file stored in .github/workflows and queues the jobs defined within.
+
+🗓️ Job Scheduling: Each job in the workflow is scheduled to run on a GitHub-hosted or self-hosted runner. GitHub-hosted runners are virtual machines provided by GitHub, while self-hosted runners are machines you configure.
+
+🏃 Runners Execute Jobs:
+
+🖥️ Provisioning: The runner provisions the required environment (e.g., operating system, language runtime).
+🔄 Steps Execution: The runner sequentially executes the steps in the job, such as checking out code, setting up dependencies, running tests etc.
+📦 Caching and Artifacts: Intermediate files can be cached, and build artifacts can be uploaded for further use or inspection.
+📊 Logging and Monitoring: During execution, logs are streamed back to GitHub, where you can monitor the progress and review detailed logs for troubleshooting.
+
+✅ Completion and Status Updates: Once all steps and jobs complete, GitHub Actions updates the status of the workflow (success, failure, or neutral) and triggers any dependent workflows if configured.
+
