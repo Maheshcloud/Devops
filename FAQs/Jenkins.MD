@@ -96,3 +96,9 @@ Quality Profiles are a core component of SonarQube where you define sets of Rule
 
 
 With the Quality Gate, you can enforce ratings (reliability, security, security review, and maintainability) based on metrics on overall code and new code. These metrics are part of the default quality gate. 
+
+Replay vs Rebuild: 
+
+Rebuild, using the Rebuilder plugin allows a completed job to be re-executed while allowing you to change the parameters, assuming your job is parameterized.
+
+Replay does something similar, except it doesn't show you parameters. Instead, it shows the pipeline code directly. This is helpful when wanting to test changes iteratively as you can click Replay, change one or two lines of code, then let it execute. The job will run using the same parameters as it did the first time it ran/completed.
