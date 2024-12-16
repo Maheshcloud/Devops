@@ -1,11 +1,59 @@
 Linux: 
 1. How to check the list of installed packages?
+
+apt list --installed | head
+apt list | head
+dpkg is a package manager for Debian-based systems.
+
+dpkg --get-selections | grep -w "install" | head
+
+dpkg-query -l | head
+
 2. Command to check kernal version
+
+The uname command in Linux is used to gather information about the system and its kernel. It stands for "Unix Name" and offers several options to display different types of information.
+
+uname -r
+
+To check the kernel version in Linux we can use the hostnamectl command.
+hostnamectl
+hostnamectl | grep 'Kernel:'
+
+The /proc/version file in Linux contains valuable information about the Linux kernel version, compiler details, and build information. It acts as a virtual file that you can access to obtain kernel-related data. To check the kernel version in Linux we use it to display the content of the proc/version file. To check the kernel version in Linux using the /proc/version file, open a terminal and enter the following command:
+cat /proc/version
+
+The dmesg command in Linux displays the kernel ring buffer messages. It enables you to see and analyze the system and kernel messages that are generated during the boot process or while the system is running. To check the kernel version in Linux using the dmesg command, open a terminal and enter the following command:
+dmesg | grep Linux
+
 3. How to create a new user and add it as sudo?
+
+adduser <username>
+
+usermod -aG sudo <username>
+
 4. Command to check if a process called 'a' is running or not. If running how to stop it
-5. Command to list all fules less than 5mb
+5. Command to list all files less than 5mb
+find /var/log -maxdepth 1 -size -5M -type f -printf '%5k %f\n'
+-maxdepth 1 tells find not to descend into subdirectories. (If you want subdirectories to be included, omit this)
+
+-size -5M tells find to limit the results to file less than 5M in size.
+
+-type f tells find to look only for regular files.
+
+-printf '%5k %f\n' tells find to allocate 5 spaces to the size and print the size in kilobytes, followed by a space, followed by the file's name.
+
+find /var/log/ -type f -size -5M -exec ls -lsh {} \; | awk '{ print $10 " has a size of " $1 }'
+
 6. Hard link v/s soft link
+
+A simple way to see the difference between a hard link and a symbolic link is through a simple example. A hard link to a file will point to the place where the file is stored, or the inode of that file. A symbolic link will point to the actual file itself.
+
 7. Command to check disk space usage and free RAM
+
+df -h shows disk space in human-readable format
+du -h shows disk usage in human-readable format for all directories and subdirectories
+fdisk -l shows disk size along with disk partitioning information
+
 
 CI/CD: 
 1. Git fetch vs Git pull
