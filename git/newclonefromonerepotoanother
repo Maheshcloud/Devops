@@ -1,5 +1,0 @@
-    git rm --cached your_folder_with_repo
-    git commit -m "remove cached repo"
-    git add your_folder_with_repo/
-    git commit -m "Add folder"
-    git push
