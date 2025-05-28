@@ -92,33 +92,10 @@ COPY only supports the basic copying of local files into the container, while AD
 that are not immediately obvious. Consequently, the best use for ADD is local tar file auto-extraction into the image, as in ADD rootfs.tar.xz /.
 
 2. Entrypoint v/s CMD
-Docker has a default entrypoint which is /bin/sh -c but does not have a default command.
+The ENTRYPOINT specifies a command that will always be executed when the container starts.
 
-When you run docker like this: docker run -i -t ubuntu bash the entrypoint is the default /bin/sh -c, the image is ubuntu and the command is bash.
-
-The command is run via the entrypoint. i.e., the actual thing that gets executed is /bin/sh -c bash. This allowed Docker to implement RUN quickly by relying on the shell's parser.
-
-Later on, people asked to be able to customize this, so ENTRYPOINT and --entrypoint were introduced.
-
-Everything after the image name, ubuntu in the example above, is the command and is passed to the entrypoint. When using the CMD instruction, it is exactly as if you were executing
-docker run -i -t ubuntu <cmd>
-The parameter of the entrypoint is <cmd>.
-
-You will also get the same result if you instead type this command docker run -i -t ubuntu: a bash shell will start in the container because in the ubuntu Dockerfile a default CMD is specified:
-CMD ["bash"].
-
-As everything is passed to the entrypoint, you can have a very nice behavior from your images. @Jiri example is good, it shows how to use an image as a "binary". When using ["/bin/cat"] as entrypoint and then doing docker run img /etc/passwd, you get it, /etc/passwd is the command and is passed to the entrypoint so the end result execution is simply /bin/cat /etc/passwd.
-
-Another example would be to have any cli as entrypoint. For instance, if you have a redis image, instead of running docker run redisimg redis -H something -u toto get key, you can simply have ENTRYPOINT ["redis", "-H", "something", "-u", "toto"] and then run like this for the same result: docker run redisimg get key.
-
-To reiterate what we’ve discussed above, ENTRYPOINT and CMD are similar but separate instructions that complement each other:
-
-ENTRYPOINT is the process that’s executed inside the container.
-CMD is the default set of arguments that are supplied to the ENTRYPOINT process.
-There are also differences in how you override these values when you start a container:
-
-CMD is easily overridden by appending your own arguments to the docker run command.
-ENTRYPOINT can be changed using the --entrypoint flag, but this should rarely be necessary for container images being used in the way they were intended. If you do change the ENTRYPOINT, you’ll almost certainly need to set a custom CMD too—as otherwise, your new ENTRYPOINT is likely to receive arguments that it doesn’t understand.
+The CMD specifies arguments that will be fed to the ENTRYPOINT.
+CMD will be overridden when running the container with alternative arguments
 
 3. How to remove all unwanted or unused doker objects from the system?
 
